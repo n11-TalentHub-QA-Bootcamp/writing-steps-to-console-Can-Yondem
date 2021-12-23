@@ -18,12 +18,15 @@ import screenplay.questions.CurrentSearchResultCount;
 import screenplay.tasks.LookForProductItem;
 import screenplay.tasks.NavigateTo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import static net.serenitybdd.screenplay.rest.questions.ResponseConsequence.seeThatResponse;
 
 public class SearchStepDefinitions {
-
+    private static final Logger logger = LoggerFactory.getLogger(SearchStepDefinitions.class);
 
     @Steps
     SearchAPI searchAPI;
@@ -44,7 +47,7 @@ public class SearchStepDefinitions {
         term = "kaan";
         actor.attemptsTo(LookForProductItem.about(term));
         try {
-            Thread.sleep(30000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -71,7 +74,7 @@ public class SearchStepDefinitions {
                         response -> response.statusCode(200))
         );
         try {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -80,16 +83,16 @@ public class SearchStepDefinitions {
 
     @Then("I should see related results on the main page")
     public void iShouldSeeRelatedResultsOnTheMainPage() {
-
-        System.out.println("last response: "+SerenityRest.lastResponse().statusCode());
+        //logger.info ile info seviyesinde log bastırdık.
+        logger.info("last response: "+SerenityRest.lastResponse().statusCode());
         List<String> resultList = SerenityRest.lastResponse().getBody().jsonPath().getList("");
-        System.out.println("resultList: "+resultList.size());
+        logger.info("resultList: "+resultList.size());
         actor.attemptsTo(
                 Ensure.that(CurrentSearchResultCount.information())
                         .contains(resultList.size() +" results have been found.")
         );
         try {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
